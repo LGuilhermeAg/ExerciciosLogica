@@ -1,17 +1,56 @@
+<div class="container" style="display: block;">
+    <h1>Pressione W A S D para jogar</h1>
+    <button id="pause">Pausar</button>
+    <button id="play">Retomar</button>
+    <h3>Pontuação:</h3>
+    <h3 id="score"></h3>
+</div>
 <canvas id="gc" width="400" height="400"></canvas>
+
 <script>
 window.onload=function() {
     canv=document.getElementById("gc");
     ctx=canv.getContext("2d");
     document.addEventListener("keydown",keyPush);
-    setInterval(game,1000/10);
+    interval=setInterval(game,1000/10);
+    play=document.getElementById("play");
+    pause=document.getElementById("pause");
+    score=document.getElementById("score");
+    score.innerHTML=pontuacao;
+    pause.onclick=function(){
+        xv=xy=0;
+    }
+    play.onclick=function(){
+        switch(lastInput){
+            case 1:
+                xv=-1;yv=0;
+                lastInput=1;
+                break;
+            case 2:
+                xv=0;yv=-1;
+                lastInput=2;
+                break;
+            case 3:
+                xv=1;yv=0;
+                lastInput=3;
+                break;
+            case 4:
+                xv=0;yv=1;
+                lastInput=4;
+                break;
+        }
+    }
+
 }
+pontuacao=0;
+lastInput=0;
 px=py=10;
 gs=tc=20;
 ax=ay=15;
 xv=yv=0;
 trail=[];
 tail = 5;
+
 function game() {
     px+=xv;
     py+=yv;
@@ -35,6 +74,7 @@ function game() {
         ctx.fillRect(trail[i].x*gs,trail[i].y*gs,gs-2,gs-2);
         if(trail[i].x==px && trail[i].y==py) {
             tail = 5;
+            pontuacao=0;
         }
     }
     trail.push({x:px,y:py});
@@ -44,6 +84,8 @@ function game() {
  
     if(ax==px && ay==py) {
         tail++;
+        pontuacao++;
+        score.innerHTML=pontuacao;
         ax=Math.floor(Math.random()*tc);
         ay=Math.floor(Math.random()*tc);
     }
@@ -54,15 +96,19 @@ function keyPush(evt) {
     switch(evt.keyCode) {
         case 65:
             xv=-1;yv=0;
+            lastInput=1;
             break;
         case 87:
             xv=0;yv=-1;
+            lastInput=2;
             break;
         case 68:
             xv=1;yv=0;
+            lastInput=3;
             break;
         case 83:
             xv=0;yv=1;
+            lastInput=4;
             break;
     }
 }
